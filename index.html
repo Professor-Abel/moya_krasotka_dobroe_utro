@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Анастасии</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #fdfaf6;
+            --text-color: #2c3539;
+            --accent-color: #8b7355; /* Благородный приглушенный золотисто-коричневый */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Raleway', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fdfaf6 0%, #f3e8d9 100%);
+            background-size: 200% 200%;
+            animation: bgMove 15s ease infinite alternate;
+            color: var(--text-color);
+        }
+
+        @keyframes bgMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Плавные экраны */
+        .screen { 
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            transform: translateY(15px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .screen.active { 
+            opacity: 1; 
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #4a4a4a;
+        }
+
+        /* Элегантные кнопки */
+        .btn {
+            margin-top: 30px;
+            padding: 12px 35px;
+            border: 1px solid var(--accent-color);
+            background: transparent;
+            color: var(--accent-color);
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-radius: 2px;
+        }
+
+        .btn:hover {
+            background: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(139, 115, 85, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Красивый таймер */
+        .timer {
+            margin: 30px 0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .timer-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timer-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        .timer-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Печатающийся текст с курсором */
+        .type-container {
+            min-height: 60px; /* Чтобы не прыгал контент */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .type {
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: var(--accent-color);
+            margin-left: 2px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Логика фотографий */
+        #secret {
+            width: 100%;
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            filter: grayscale(100%) blur(4px);
+            transition: filter 2.5s ease, transform 2.5s ease;
+            cursor: pointer; /* Подсказка, что можно нажать */
+        }
+
+        .photo-container img {
+            width: 100%;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        #photo1 { position: relative; opacity: 1; }
+        #photo2 { opacity: 0; }
+
+        .photo-container.colored {
+            filter: grayscale(0%) blur(0);
+            transform: scale(1.02);
+        }
+
+        .photo-container.show-second #photo2 {
+            opacity: 1;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            padding: 20px 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            opacity: 0;
+            transition: all 1.5s ease;
+        }
+
+        .photo-container.colored .photo-overlay {
+            bottom: 0;
+            opacity: 1;
+        }
+
+        .final-text {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 2s ease;
+            font-size: 1.1rem;
+        }
+
+        .final-text.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="screen active" id="screen1">
+            <h1>Доброе утро, Анастасия...</h1>
+            <div class="type-container">
+                <span id="type1" class="type"></span><span class="cursor" id="cursor1"></span>
+            </div>
+            <button class="btn" onclick="start()">Начать</button>
+        </div>
+
+        <div class="screen" id="screen2">
+            <h1>Наше время</h1>
+            <div class="timer" id="timer">
+                </div>
+            <button class="btn" onclick="next(3)">Дальше</button>
+        </div>
+
+        <div class="screen" id="screen3">
+            <h1>О тебе</h1>
+            <div class="type-container" style="min-height: 100px;">
+                <span id="type2" class="type"></span><span class="cursor" id="cursor2" style="display:none;"></span>
+            </div>
+            <button class="btn" id="btn3" style="opacity: 0; transition: opacity 1s;" onclick="next(4)">Смотреть дальше</button>
+        </div>
+
+        <div class="screen" id="screen4">
+            <h1 id="finalTitle">Смотри...</h1>
+
+            <div id="secret">
+                <div class="photo-container" id="photoWrap">
+                    <img src="photo1.jpg" id="photo1" alt="Мы">
+                    <img src="photo2.jpg" id="photo2" alt="Мы поцелуй">
+                    <div class="photo-overlay">Ты — мой человек</div>
+                </div>
+
+                <p class="final-text" id="finalText">
+                    Я влюбляюсь в тебя заново каждое утро.<br><br>
+                    И если вдруг тебе станет тяжело — просто вспомни:<br>
+                    где-то есть я, который уже выбрал тебя. <span style="font-family: 'Playfair Display', serif; font-style: italic;">Навсегда.</span>
+                </p>
+            </div>
+
+            <button class="btn" id="openBtn" onclick="show()">Открыть</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Плавная смена экранов
+        function next(n) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            setTimeout(() => {
+                document.getElementById('screen' + n).classList.add('active');
+                
+                // Триггеры для специфичных экранов
+                if(n === 3) startType2();
+            }, 500); // Задержка для красоты перехода
+        }
+
+        // Старт
+        function start() {
+            next(2);
+            startTimer();
+        }
+
+        // Красивый таймер
+        function startTimer() {
+            const startDate = new Date("2025-07-09T00:00:00");
+            
+            setInterval(() => {
+                const diff = new Date() - startDate;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+                document.getElementById('timer').innerHTML = `
+                    <div class="timer-box">
+                        <span class="timer-num">${days}</span>
+                        <span class="timer-label">Дней</span>
+                    </div>
+                    <div class="timer-box" style="justify-content: center;">
+                        <span class="timer-num" style="font-size: 2rem;">:</span>
+                    </div>
+                    <div class="timer-box">
+                        <span class="timer-num">${hours}</span>
+                        <span class="timer-label">Часов</span>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // Печать текста (улучшенная)
+        function typeText(id, cursorId, text, callback) {
+            let i = 0;
+            let el = document.getElementById(id);
+            let cursor = document.getElementById(cursorId);
+            cursor.style.display = 'inline-block';
+            el.innerHTML = "";
+
+            let interval = setInterval(() => {
+                el.innerHTML += text[i];
+                i++;
+                if (i >= text.length) {
+                    clearInterval(interval);
+                    if(callback) callback();
+                }
+            }, 50);
+        }
+
+        // Инициализация первого текста при загрузке
+        window.onload = () => {
+            setTimeout(() => {
+                typeText("type1", "cursor1", "Я просто хочу, чтобы ты это почувствовала...");
+            }, 800);
+        };
+
+        // Запуск второго текста
+        function startType2() {
+            setTimeout(() => {
+                typeText("type2", "cursor2", "Твой смех. Твои глаза. То, как ты рядом... Ты даже не представляешь, как сильно ты изменила мой мир.", () => {
+                    document.getElementById('btn3').style.opacity = '1';
+                });
+            }, 800);
+        }
+
+        // Финал
+        function show() {
+            document.getElementById('openBtn').style.display = 'none';
+            document.getElementById('finalTitle').style.display = 'none';
+            
+            const secret = document.getElementById('secret');
+            secret.style.display = 'block';
+            
+            // Плавное появление блока
+            setTimeout(() => { secret.style.opacity = '1'; }, 100);
+
+            // Проявление цвета и снятие блюра
+            setTimeout(() => {
+                document.getElementById('photoWrap').classList.add('colored');
+            }, 1000);
+
+            // Появление второго фото (поцелуй)
+            setTimeout(() => {
+                document.getElementById('photoWrap').classList.add('show-second');
+            }, 4000);
+
+            // Появление финального текста
+            setTimeout(() => {
+                document.getElementById('finalText').classList.add('show');
+            }, 5500);
+        }
+    </script>
+</body>
+</html>
